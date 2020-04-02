@@ -38,6 +38,7 @@ function tacada(linha, coluna) {
             const vitoria = hasVitoria();
             atualizarVitoria(vitoria);
             if (vitoria) {
+                document.getElementById("row_turn").style.display = "none";
                 game.running = false;
             }
         }
@@ -82,6 +83,7 @@ function restart() {
     atualizarPlayer(game.turn);
     atualizarVitoria();
     remvoeWins();
+    document.getElementById("row_turn").style.display = "block";
 }
 
 function hasVitoria() {
