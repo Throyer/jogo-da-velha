@@ -1,10 +1,16 @@
+const randon = (min, max) => {
+    const _min = Math.ceil(min);
+    const _max = Math.floor(max);
+    return (Math.floor(Math.random() * (_max - _min + 1)) + _min);
+}
+
 const CONDICOES_VITORIA = {
     VITORIA: 1,
     EMPATE: 0,
 }
 
-const playerA = { symbol: "X" }
-const playerB = { symbol: "O" }
+const playerA = { symbol: "X", computer: false, name: "Você" }
+const playerB = { symbol: "O", computer: true, name: "O Computador" }
 
 playerA.next = playerB;
 playerB.next = playerA;
@@ -36,13 +42,31 @@ function tacada(linha, coluna) {
             renderizarTabuleiro();
             atualizarPlayer(player.next);
             const vitoria = hasVitoria();
-            atualizarVitoria(vitoria);
+
             if (vitoria) {
+                atualizarVitoria(vitoria);
                 document.getElementById("row_turn").style.display = "none";
                 game.running = false;
+                return;
+            }
+
+            if (game.turn.computer) {
+                tacadaIA();
             }
         }
     }
+}
+
+function tacadaIA() {
+    const tabuleiro = game.tabuleiro;
+    let tentativa = "tentativa"; 
+    let jogada = { row: 0, col: 0 };
+    while (tentativa) {
+        jogada.row = randon(0,2);
+        jogada.col = randon(0,2);
+        tentativa = tabuleiro[jogada.row][jogada.col];
+    }
+    setTimeout(() => tacada(jogada.row,jogada.col), 300);
 }
 
 function renderizarTabuleiro() {
@@ -95,11 +119,11 @@ function hasVitoria() {
 
     const win = (condition) => {
         if (condition === VITORIA_X) {
-            return "Jogador X ganhou."
+            return `${[playerA, playerB].find(p => p.symbol === "X").name} ganhou.`
         }
 
         if (condition === VITORIA_O) {
-            return "Jogador O ganhou."
+            return `${[playerA, playerB].find(p => p.symbol === "O").name} ganhou.`
         }
         return null;
     }
